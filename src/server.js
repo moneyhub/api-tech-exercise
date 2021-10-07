@@ -13,9 +13,23 @@ const clientSecret = '6f1afff8-eb81-4945-8b91-a05e3d095ce3';
 
 /**
  * *. implement GET/uers/{userId}/transactions endpoint
- - 1. get an access token from the bank v
- - 2. retrieve all the transactions from the bank for a given user
+
+
  - 3. format the transaction according to schema laid out in the swagger documentation 
+
+  * {
+  "data": [
+    {
+      "id": "c83f307c-7c67-44b1-a277-1bb533cdaf5c",
+      "accountId": "8066de10-79c6-495a-9f6b-3b1a5eb0b023",
+      "amount": 799,
+      "date": "2021-09-04T23:00:00.000Z",
+      "description": "Netflix subscription",
+      "status": "posted"
+    }
+  ]
+}
+
   ( check sweggar documentation)
  - update docs for the route implemented (swagger)
  - make effective use of git
