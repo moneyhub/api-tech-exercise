@@ -14,3 +14,15 @@ exports.getToken = ({tokenEndpoint, clientId, clientSecret, scope}) => {
     },
   })
 }
+
+exports.getTransactionsByAccountId = ({tokenEndpoint, clientId, clientSecret, access_token}) => {  
+  const clientCredsBase64 = Buffer.from(`${clientId}:${clientSecret}`).toString(
+    "base64"
+  )
+  return got.get(tokenEndpoint, {
+    searchParams: {
+      authorization: `Basic ${clientCredsBase64}`,
+      access_token,
+    },
+  })
+}

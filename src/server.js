@@ -5,7 +5,7 @@ const app = express();
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-const { getToken } = require('./get-client-credentials-grant-token');
+const { getToken, getTransactionsByAccountId } = require('./get-client-credentials-grant-token');
 
 //probably this details will be in integartions db in real world ?
 const clientId = 'ba1bdcc0-60f5-4939-afc4-1b13a98dc490';
@@ -26,16 +26,20 @@ const clientSecret = '6f1afff8-eb81-4945-8b91-a05e3d095ce3';
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
-
+app.get('/', (req, res) => res.status(200).send('healthy'))
 app.use('/users/:userId/transactions', async(req, res) => {
 
     const { access_token } = await fetchToken();
-    console.log(access_token)
+    const { userId } = req.params;
+
+    const transactions = await fetchTransaction(access_token, userId);
+    console.log(transactions.Data.Transactions)
+
     return  res.status(200).send({data: {test: 'yoyo' }});
 })
 
 function fetchToken() {
-    const details = {
+    const secrets = {
         clientId,
         clientSecret,
         scope:'transactions',
@@ -43,9 +47,24 @@ function fetchToken() {
     }
 
     try {
-        return getToken(details).then(res => JSON.parse(res.body))
+        return getToken(secrets).then(res => JSON.parse(res.body))
     } catch (e) {
         console.log(e,' show me error')
+    }
+}
+
+function fetchTransaction(access_token, accountId) {
+    const secrets = {
+        clientId,
+        clientSecret,
+        access_token,
+        tokenEndpoint: `https://obmockaspsp.moneyhub.co.uk/api/users/${accountId}/transactions`
+    }
+
+    try {
+        return getTransactionsByAccountId(secrets).then(res => JSON.parse(res.body))
+    } catch(e) {
+        console.log(e)
     }
 }
 
