@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
 const { getToken, getTransactionsByAccountId } = require('./get-client-credentials-grant-token');
+const { mapTransactionData } = require('./utils/utils');
 
 //probably this details will be in integartions db in real world ?
 const clientId = 'ba1bdcc0-60f5-4939-afc4-1b13a98dc490';
@@ -13,26 +14,7 @@ const clientSecret = '6f1afff8-eb81-4945-8b91-a05e3d095ce3';
 
 /**
  * *. implement GET/uers/{userId}/transactions endpoint
-
-
- - 3. format the transaction according to schema laid out in the swagger documentation 
-
-  * {
-  "data": [
-    {
-      "id": "c83f307c-7c67-44b1-a277-1bb533cdaf5c",
-      "accountId": "8066de10-79c6-495a-9f6b-3b1a5eb0b023",
-      "amount": 799,
-      "date": "2021-09-04T23:00:00.000Z",
-      "description": "Netflix subscription",
-      "status": "posted"
-    }
-  ]
-}
-
-  ( check sweggar documentation)
  - update docs for the route implemented (swagger)
- - make effective use of git
  */
 
 
@@ -49,7 +31,9 @@ app.use('/users/:userId/transactions', async(req, res) => {
     const transactions = await fetchTransaction(access_token, userId);
     console.log(transactions.Data.Transactions)
 
-    return  res.status(200).send({data: {test: 'yoyo' }});
+    const mappedTransactions = mapTransactionData((transactions.Data.Transactions));
+
+    return  res.status(200).send({data: mappedTransactions});
 })
 
 function fetchToken() {
