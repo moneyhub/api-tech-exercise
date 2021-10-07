@@ -1,6 +1,6 @@
 const got = require("got")
 
-const getToken = ({tokenEndpoint, clientId, clientSecret, scope}) => {
+exports.getToken = ({tokenEndpoint, clientId, clientSecret, scope}) => {
   const clientCredsBase64 = Buffer.from(`${clientId}:${clientSecret}`).toString(
     "base64"
   )
